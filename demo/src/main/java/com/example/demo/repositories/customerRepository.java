@@ -10,13 +10,13 @@ import java.util.Optional;
 @Repository
 public interface customerRepository extends JpaRepository<customer,Long> {
 
-    @Query(value = "SELECT * FROM customer c WHERE c.username = :username", nativeQuery = true)
-    Optional<customer> searchByUsername(String username);
+    @Query(value = "SELECT * FROM customer c WHERE c.email = :email", nativeQuery = true)
+    Optional<customer> searchByEmail(String email);
 
     @Query(value = "SELECT * FROM customer c WHERE c.password = :password", nativeQuery = true)
     Optional<customer> searchByPassword(String password);
 
-    @Query(value = "SELECT * FROM customer c WHERE c.username = :username", nativeQuery = true)
-    customer searchForUser(String username);
+    @Query(value = "SELECT * FROM customer c WHERE c.email = :email", nativeQuery = true)
+    customer searchForUser(String email);
 
 }

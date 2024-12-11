@@ -7,16 +7,20 @@ public class employee extends account {
     private Float salary;
     private String position;
 
-    public employee () {}
+    public employee () {
 
-    public employee(String username, String password) {
-        super(username, password);
+    }
+    public employee(String email, String password) {
+        super(email,password);
+    }
+    public employee(String username, String password,String email) {
+        super(username, password,email);
     }
 
-    public employee(String username, String password, Float salary, String position) {
-        super(username, password);
+    public employee(String username, String password,String email, Float salary, String position) {
+        super(username, password,email);
         this.salary = salary;
-        position = position;
+        this.position = position;
     }
 
     public Float getSalary() {
@@ -45,6 +49,7 @@ public class employee extends account {
                 "salary=" + salary +
                 "username='" + getUsername() + '\'' +
                 ", password='" + getPassword() + '\'' +
+                ", email='" + getEmail() + '\'' +
                 ", Position='" + position + '\'' +
                 '}';
     }

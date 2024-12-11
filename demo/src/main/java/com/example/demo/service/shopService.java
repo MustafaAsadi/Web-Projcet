@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.classes.customer;
 import com.example.demo.classes.employee;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,8 +35,8 @@ public class shopService {
     }
 
 
-    public Optional<customer> findCustomerByUsername(customer customer) {
-        Optional<customer> username = customerRepository.searchByUsername(customer.getUsername());
+    public Optional<customer> findCustomerByEmail(customer customer) {
+        Optional<customer> username = customerRepository.searchByEmail(customer.getEmail());
 
         return username;
     }
@@ -47,11 +48,11 @@ public class shopService {
     }
 
     public customer getCustomerInfo(customer customer) {
-        return customerRepository.searchForUser(customer.getUsername());
+        return customerRepository.searchForUser(customer.getEmail());
     }
 
-    public Optional<employee> findEmployeeByUsername(employee employee) {
-        Optional<employee> username = employeeRepository.searchByUsername(employee.getUsername());
+    public Optional<employee> findEmployeeByEmail(employee employee) {
+        Optional<employee> username = employeeRepository.searchByEmail(employee.getEmail());
 
         return username;
     }
@@ -63,8 +64,54 @@ public class shopService {
 
 
     public employee getEmployeeInfo(employee employee) {
-        return employeeRepository.searchForUser(employee.getUsername());
+        return employeeRepository.searchForUser(employee.getEmail());
     }
 
 
+    public void deleteEmployee(String id) {
+        try {
+            Long LongId = Long.parseLong(id);
+            employeeRepository.deleteById(LongId);
+        }
+        catch (NumberFormatException e) {
+            throw new NumberFormatException("Enter id as a number ");
+        }
+
+    }
+    public void deleteCustomer(String id) {
+        try {
+            Long LongId = Long.parseLong(id);
+            customerRepository.deleteById(LongId);
+        }
+        catch (NumberFormatException e) {
+            throw new NumberFormatException("Enter id as a number");
+        }
+
+    }
+
+    public void changeEmployeeUsername(String id ,String value) {
+        Long LongId = Long.parseLong(id);
+        employeeRepository.updateEmployeeUsername(id,value);
+    }
+
+    public void changeEmployeePassword(String id,String value) {
+        Long LongId = Long.parseLong(id);
+        employeeRepository.updateEmployeePassword(id,value);
+    }
+
+    public void changeEmployeePositon(String id,String value) {
+        Long LongId = Long.parseLong(id);
+        employeeRepository.updateEmployeePositon(id,value);
+    }
+
+    public void changeEmployeeEmail(String id,String value) {
+        Long LongId = Long.parseLong(id);
+        employeeRepository.updateEmployeeEmail(id,value);
+    }
+
+    public void changeEmployeeSalary(String id,String value) {
+        Long LongId = Long.parseLong(id);
+        int salary = Integer.parseInt(value);
+        employeeRepository.updateEmployeeSalary(id,value);
+    }
 }
