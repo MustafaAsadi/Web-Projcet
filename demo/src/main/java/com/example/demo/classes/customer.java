@@ -9,9 +9,9 @@ import java.time.LocalDate;
 public class customer extends account{
 
     private LocalDate dateOfCreation;
-public customer() {
+    public customer() {
 
-}
+    }
     public customer(String email, String password) {
         super(email, password);
 

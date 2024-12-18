@@ -91,27 +91,28 @@ public class shopService {
 
     public void changeEmployeeUsername(String id ,String value) {
         Long LongId = Long.parseLong(id);
-        employeeRepository.updateEmployeeUsername(id,value);
+        System.out.println(LongId);
+        employeeRepository.updateEmployeeUsername(LongId,value);
     }
 
     public void changeEmployeePassword(String id,String value) {
         Long LongId = Long.parseLong(id);
-        employeeRepository.updateEmployeePassword(id,value);
+        employeeRepository.updateEmployeePassword(LongId,value);
     }
 
     public void changeEmployeePositon(String id,String value) {
         Long LongId = Long.parseLong(id);
-        employeeRepository.updateEmployeePositon(id,value);
+        employeeRepository.updateEmployeePositon(LongId,value);
     }
 
     public void changeEmployeeEmail(String id,String value) {
         Long LongId = Long.parseLong(id);
-        employeeRepository.updateEmployeeEmail(id,value);
+        employeeRepository.updateEmployeeEmail(LongId,value);
     }
 
     public void changeEmployeeSalary(String id,String value) {
         Long LongId = Long.parseLong(id);
-        int salary = Integer.parseInt(value);
-        employeeRepository.updateEmployeeSalary(id,value);
+        Float salary = Float.parseFloat(value);
+        employeeRepository.updateEmployeeSalary(LongId,salary);
     }
 }

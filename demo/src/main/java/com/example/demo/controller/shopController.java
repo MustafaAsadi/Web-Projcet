@@ -4,6 +4,7 @@ import com.example.demo.classes.customer;
 import com.example.demo.classes.employee;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,6 +15,7 @@ import org.springframework.ui.Model;
 
 @RestController
 @RequestMapping("/api/v1")
+@CrossOrigin(origins = "http://localhost:4200")
 public class shopController {
 
     private com.example.demo.service.shopService shopService;
@@ -41,7 +43,32 @@ public class shopController {
         if(customer.getdateOfCreation() == null) {
             customer.setDateOfCreation();
         }
-        return shopService.registerCustomer(customer);
+            if (customer.getPassword().contains("!") || customer.getPassword().contains("@") ||
+                    customer.getPassword().contains("#") || customer.getPassword().contains("$") ||
+                    customer.getPassword().contains("%") || customer.getPassword().contains("^") ||
+                    customer.getPassword().contains("&") || customer.getPassword().contains("*") ||
+                    customer.getPassword().contains("(") || customer.getPassword().contains(")") ||
+                    customer.getPassword().contains("_") || customer.getPassword().contains("+") ||
+                    customer.getPassword().contains("\"") || customer.getPassword().contains("'") ||
+                    customer.getPassword().contains("\\") || customer.getPassword().contains("/") ||
+                    customer.getPassword().contains(":") || customer.getPassword().contains(";") ||
+                    customer.getPassword().contains(",") || customer.getPassword().contains("<") ||
+                    customer.getPassword().contains(">") || customer.getPassword().contains(".") ||
+                    customer.getPassword().contains("?")) {
+                if(customer.getPassword().matches(".*[A-Z].*")) {
+                    if(customer.getPassword().length()>8) {
+                        if(customer.getPassword().matches(".*[0-9].*")) {
+                            return shopService.registerCustomer(customer);
+                        }
+                        else  throw new IllegalArgumentException("the password must contains at least one number");
+                    }
+                    else throw new IllegalArgumentException("The password must contains at least 8 characters");
+                }
+                else throw new IllegalArgumentException("the password must contains at least one capital letter");
+            }
+
+        else
+            throw new IllegalArgumentException(" the password must contains at least one speical character");
     }
 
     @RequestMapping(path = "/register/employee", method = RequestMethod.POST)
@@ -50,7 +77,28 @@ public class shopController {
         String password = info.get("password");
         String email = info.get("email");
         employee employee = new employee(username,password,email);
-        return shopService.registerEmployee(employee);
+        if (employee.getPassword().contains("!") || employee.getPassword().contains("@") ||
+                employee.getPassword().contains("#") || employee.getPassword().contains("$") ||
+                employee.getPassword().contains("%") || employee.getPassword().contains("^") ||
+                employee.getPassword().contains("&") || employee.getPassword().contains("*") ||
+                employee.getPassword().contains("(") || employee.getPassword().contains(")") ||
+                employee.getPassword().contains("_") || employee.getPassword().contains("+") ||
+                employee.getPassword().contains("\"") || employee.getPassword().contains("'") ||
+                employee.getPassword().contains("\\") || employee.getPassword().contains("/") ||
+                employee.getPassword().contains(":") || employee.getPassword().contains(";") ||
+                employee.getPassword().contains(",") || employee.getPassword().contains("<") ||
+                employee.getPassword().contains(">") || employee.getPassword().contains(".") ||
+                employee.getPassword().contains("?")) {
+            if(employee.getPassword().length()>8) {
+                if(employee.getPassword().matches(".*[0-9].*")) {
+                    return shopService.registerEmployee(employee);
+                }
+                else  throw new IllegalArgumentException("the password must contains at least one number");
+            }
+            else throw new IllegalArgumentException("The password must contains at least 8 characters");
+        }
+        else
+            throw new IllegalArgumentException(" the password must contains at least one speical character");
     }
 
 
@@ -80,7 +128,7 @@ public class shopController {
         return shopService.getCustomerInfo(loggedIn);
 
     }
-//--------------------------------------------------------------------------------------------------
+    //--------------------------------------------------------------------------------------------------
     @RequestMapping(path = "dashboard/employee", method = RequestMethod.POST)
     public employee getEmployeeInfo(HttpSession session) {
         employee loggedIn = (employee) session.getAttribute("loggedInEmployee");
@@ -89,7 +137,7 @@ public class shopController {
     }
 
     @RequestMapping(path = "/login/employee", method = RequestMethod.POST)
-    public Object loginEmployee(@RequestBody Map<String,String> credentials, HttpSession session) {
+    public ResponseEntity<String> loginEmployee(@RequestBody Map<String,String> credentials, HttpSession session) {
         String email = credentials.get("email");
         String password = credentials.get("password");
 
@@ -100,12 +148,12 @@ public class shopController {
         employee employee = new employee(email,password);
         if (shopService.findEmployeeByEmail(employee).isPresent() & shopService.findEmployeeByPassword(employee).isPresent()) {
             session.setAttribute("loggedInEmployee",shopService.getEmployeeInfo(employee));
-            return "redirect:/dashboard/employee";
+            return ResponseEntity.ok("Login successful");
         } else {
             throw new IllegalStateException("Invalid email/password");
         }
 
-}
+    }
     @RequestMapping(path="/dashboard/employee/admin",method = RequestMethod.POST)
     public String adminBoard(@RequestBody Map<String,String> request,HttpSession session){
         employee admin = (employee) session.getAttribute("loggedInEmployee");
@@ -121,7 +169,7 @@ public class shopController {
             }
         }
         System.out.println("Received choice: " + choice);
-        return "redirect:/login/employee";
+        return "redirect:/dashboard/employee";
     }
     @RequestMapping(path ="/dashboard/employee/admin/delete",method = RequestMethod.DELETE)//change to RequestMethod.DELETE
     public void operationDelete(@RequestBody Map <String,String> userToDelete) {
@@ -146,12 +194,16 @@ public class shopController {
                 break;
             case "password":
                 shopService.changeEmployeePassword(id,value);
+                break;
             case "position":
                 shopService.changeEmployeePositon(id,value);
+                break;
             case "email":
                 shopService.changeEmployeeEmail(id,value);
+                break;
             case "salary":
                 shopService.changeEmployeeSalary(id,value);
+                break;
 
         }
     }
