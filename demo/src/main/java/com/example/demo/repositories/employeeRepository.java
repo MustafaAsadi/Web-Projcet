@@ -46,5 +46,7 @@ public interface employeeRepository extends JpaRepository<employee,Long> {
     @Transactional
     @Query(value = "UPDATE Employee c SET c.salary = :salary WHERE c.id = :id",nativeQuery = true)
     void updateEmployeeSalary(@Param("id")Long longId,@Param("salary") Float salary);
+
+
 }
 

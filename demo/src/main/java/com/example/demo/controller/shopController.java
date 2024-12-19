@@ -3,9 +3,15 @@ package com.example.demo.controller;
 import com.example.demo.classes.customer;
 import com.example.demo.classes.employee;
 import jakarta.servlet.http.HttpSession;
+import jdk.swing.interop.SwingInterOpUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.web.bind.annotation.*;
+
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import java.util.List;
 import java.util.Map;
@@ -19,6 +25,9 @@ import org.springframework.ui.Model;
 public class shopController {
 
     private com.example.demo.service.shopService shopService;
+
+    @Autowired
+    private JavaMailSender emailSender;
 
     @Autowired
     public shopController(com.example.demo.service.shopService shopService) {
@@ -206,6 +215,36 @@ public class shopController {
                 break;
 
         }
+    }
+
+@RequestMapping(path = "/login/customer/requestChangePassword" ,method = RequestMethod.POST)
+    public void  passwordReset(@RequestBody Map<String,String> Tokenemail, HttpSession session) {
+    String email = Tokenemail.get("email");
+    System.out.println(shopService.CheakForEmail(email));
+    if(shopService.CheakForEmail(email)==null) {
+        throw new IllegalStateException("There is no such email has an account");
+    }
+    else {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("memoahmad20022@gmail.com");
+        message.setTo(email);
+        message.setSubject("Password retrival");
+        message.setText(
+                "you can retrive your password from this url:http://localhost:8080/api/v1/login/customer/resetpassword"
+        );
+        System.out.println("EMAIL SENT RIGHT");
+        System.out.println(message);
+        emailSender.send(message);
+        session.setAttribute(email,"transition");
+    }
+
+
+}
+    @RequestMapping(path = "/login/customer/resetpassword" ,method = RequestMethod.PATCH)
+    public void changePassword(@RequestBody Map<String,String> tokenpassword,HttpSession session) {
+        String password = tokenpassword.get("email");
+        String email = (String) session.getAttribute("transition");
+        shopService.resetPassword(password,email);
     }
 }
 //TODO JWT

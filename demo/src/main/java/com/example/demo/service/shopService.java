@@ -2,7 +2,6 @@ package com.example.demo.service;
 
 import com.example.demo.classes.customer;
 import com.example.demo.classes.employee;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -114,5 +113,13 @@ public class shopService {
         Long LongId = Long.parseLong(id);
         Float salary = Float.parseFloat(value);
         employeeRepository.updateEmployeeSalary(LongId,salary);
+    }
+
+    public String CheakForEmail (String email) {
+    return customerRepository.SearchForEmail(email);
+    }
+
+    public void resetPassword(String password, String email) {
+        customerRepository.resetPassword(password,email);
     }
 }
